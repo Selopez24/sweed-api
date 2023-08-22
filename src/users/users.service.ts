@@ -12,7 +12,7 @@ export class UsersService {
   ) {}
 
   async create(createUserDTO: createUserDTO): Promise<User> {
-    const user = this.findByEmail(createUserDTO.email);
+    const user = await this.findByEmail(createUserDTO.email);
 
     if (user) {
       throw new ForbiddenException('User already exists');
@@ -33,6 +33,10 @@ export class UsersService {
 
   findOne(id: string): Promise<User> {
     return this.usersRepository.findOneBy({ id });
+  }
+
+  findByUsername(username: string): Promise<User> {
+    return this.usersRepository.findOneBy({ username });
   }
 
   findByEmail(email: string): Promise<User> {

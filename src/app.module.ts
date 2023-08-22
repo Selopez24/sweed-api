@@ -5,8 +5,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/jwt.guard';
-import { User } from './users/user.entity';
 import { UsersModule } from './users/users.module';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
@@ -14,14 +14,15 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
+      host: 'db.mdttalbjettowwtmzfrx.supabase.co',
       port: 5432,
-      username: 'sebastianl',
-      password: 'tesla123',
-      database: 'sebastianl',
-      entities: [User],
+      username: 'postgres',
+      password: 'QD4TfiLlQO378MSb',
+      database: 'postgres',
       synchronize: true,
+      autoLoadEntities: true,
     }),
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: JwtAuthGuard }],

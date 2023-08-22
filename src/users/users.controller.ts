@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { Public } from 'src/decorators/public';
 import createUserDTO from './dto/createUser.dto';
+import getUserDTO from './dto/getUserDTO';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 
@@ -15,7 +16,14 @@ export class UsersController {
   }
 
   @Post()
-  create(@Body() createUserDTO: createUserDTO): Promise<User> {
-    return this.usersService.create(createUserDTO);
+  async create(@Body() createUserDTO: createUserDTO): Promise<getUserDTO> {
+    try {
+      const user = await this.usersService.create(createUserDTO);
+      const { password, ...restUser } = user;
+
+      return restUser;
+    } catch (error) {
+      return error.response;
+    }
   }
 }
