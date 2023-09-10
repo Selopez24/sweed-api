@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import createUserDTO from './dto/createUser.dto';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
+import { getColumnsFromRepo } from 'src/utils/getColumnsFromRepo';
 
 @Injectable()
 export class UsersService {
@@ -35,8 +36,18 @@ export class UsersService {
     return this.usersRepository.findOneBy({ id });
   }
 
-  findByUsername(username: string): Promise<User> {
-    return this.usersRepository.findOneBy({ username });
+  findByUsername(
+    username: string,
+    withPassword: boolean = false,
+  ): Promise<User> {
+    const columns = getColumnsFromRepo(this.usersRepository, [
+      withPassword ? '' : 'password',
+    ]);
+
+    return this.usersRepository.findOne({
+      select: columns,
+      where: { username },
+    });
   }
 
   findByEmail(email: string): Promise<User> {

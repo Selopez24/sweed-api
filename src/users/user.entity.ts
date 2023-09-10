@@ -25,7 +25,7 @@ export class User {
   @Column()
   email: string;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @Column({ default: true })
@@ -38,7 +38,5 @@ export class User {
   updateDate: Date;
 
   @OneToMany(() => Post, (post) => post.user)
-
-  posts: Post[]
-
+  posts: Post[];
 }
