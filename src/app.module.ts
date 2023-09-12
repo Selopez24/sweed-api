@@ -7,11 +7,10 @@ import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/jwt.guard';
 import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
+import { ImagesModule } from './images/images.module';
 
 @Module({
   imports: [
-    AuthModule,
-    UsersModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'db.mdttalbjettowwtmzfrx.supabase.co',
@@ -22,7 +21,10 @@ import { PostsModule } from './posts/posts.module';
       synchronize: true,
       autoLoadEntities: true,
     }),
+    AuthModule,
+    UsersModule,
     PostsModule,
+    ImagesModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: JwtAuthGuard }],

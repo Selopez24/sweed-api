@@ -20,6 +20,7 @@ export class PostsService {
   findByUserId(userId: string): Promise<Post[]> {
     return this.postsRepository.find({
       where: { userId },
+      relations: { images: true },
     });
   }
 }

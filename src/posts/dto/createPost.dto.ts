@@ -1,5 +1,6 @@
 interface createPostDTO {
-  content: string
+  content: string;
+  images: any[];
 }
 
-export default createPostDTO 
+export default createPostDTO;

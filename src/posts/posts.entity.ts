@@ -1,9 +1,11 @@
+import { Image } from 'src/images/image.entity';
 import { User } from 'src/users/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -16,9 +18,6 @@ export class Post {
   @Column({ type: 'varchar', length: 250 })
   content: string;
 
-  @Column({ nullable: true })
-  image: string;
-
   @CreateDateColumn()
   createDate: Date;
 
@@ -30,4 +29,7 @@ export class Post {
 
   @Column()
   userId: string;
+
+  @OneToMany(() => Image, (image) => image.post, { cascade: true })
+  images: Image[];
 }
