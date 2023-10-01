@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import createUserDTO from './dto/createUser.dto';
@@ -36,10 +40,7 @@ export class UsersService {
     return this.usersRepository.findOneBy({ id });
   }
 
-  findByUsername(
-    username: string,
-    withPassword: boolean = false,
-  ): Promise<User> {
+  findByUsername(username: string, withPassword = false): Promise<User> {
     const columns = getColumnsFromRepo(this.usersRepository, [
       withPassword ? '' : 'password',
     ]);
@@ -57,5 +58,23 @@ export class UsersService {
 
   async remove(id: string): Promise<void> {
     await this.usersRepository.delete(id);
+  }
+
+  findById(id: string): Promise<User> {
+    const user = this.usersRepository.findOneBy({ id });
+
+    return user;
+  }
+
+  async updateUserPassword(id: string, newPassword: string): Promise<void> {
+    const user = await this.usersRepository.findOneBy({ id });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.password = newPassword;
+
+    await this.usersRepository.save(user);
   }
 }
