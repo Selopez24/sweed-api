@@ -1,9 +1,15 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { sendEmail } from 'src/email/email';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +20,9 @@ export class AuthService {
 
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.usersService.findByUsername(username, true);
+
+    if (!user)
+      throw new HttpException('username was not found', HttpStatus.NOT_FOUND);
 
     const isCorrectPassword = await bcrypt.compare(password, user.password);
 
@@ -26,10 +35,10 @@ export class AuthService {
     return null;
   }
 
-  async login(user: any) {
+  async login(user: User) {
     const payload = { username: user.username, sub: user.id };
 
-    return { access_token: this.jwtService.sign(payload) };
+    return { access_token: this.jwtService.sign(payload), ...user };
   }
 
   async requestResetPassword(email: string) {

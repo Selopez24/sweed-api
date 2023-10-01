@@ -1,8 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { Public } from 'src/decorators/public';
 import createUserDTO from './dto/createUser.dto';
-import getUserDTO from './dto/getUserDTO';
-import { User } from './user.entity';
+import getUserDTO from './dto/getUser.dto';
 import { UsersService } from './users.service';
 
 @Public()
