@@ -42,16 +42,14 @@ export class AuthService {
   }
 
   async requestResetPassword(email: string) {
-    console.log({ email });
     const user = await this.usersService.findByEmail(email);
     if (!user) {
       throw new NotFoundException('Email not found');
     }
 
     const token = this.jwtService.sign({ sub: user.id, email });
-    console.log({ token });
 
-    const res = sendEmail(email, token);
+    await sendEmail(email, token);
 
     return { user, token, email };
   }

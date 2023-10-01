@@ -1,29 +1,29 @@
-import * as nodemailer from 'nodemailer';
+import * as dotenv from 'dotenv';
+import * as formData from 'form-data';
+import Mailgun from 'mailgun.js';
 
-const transport = nodemailer.createTransport({
-  host: 'sandbox.smtp.mailtrap.io',
-  port: 2525,
-  auth: {
-    user: 'ec7d51f40c7bd1',
-    pass: 'ff2c31832e5c51',
-  },
-});
+dotenv.config();
 
-export const sendEmail = (email: string, token: string) => {
+const mailgunDomain = process.env.MAILGUN_DOMAIN as string;
+const mailgunApiKey = process.env.MAILGUN_API_KEY as string;
+
+const mailgun = new Mailgun(formData);
+const client = mailgun.client({ username: 'api', key: mailgunApiKey });
+
+export const sendEmail = async (email: string, token: string) => {
   const resetLink = `http://yourdomain.com/reset-password?token=${token}`;
-  const resetMessage = {
-    from: email,
-    to: 'feedmite@hotmail.com',
+
+  const emailData = {
+    from: 'costeecon@gmail.com',
+    to: email,
     subject: 'resetPassword',
-    text: `this is for reset your password here is your token ${token}`,
+    text: `This is for resetting your password. Here is your token: ${token}`,
     html: `<p>Click <a href="${resetLink}">here</a> to reset your password</p>`,
   };
 
-  transport.sendMail(resetMessage, (err, info) => {
-    if (err) {
-      console.log({ err });
-    } else {
-      console.log({ info });
-    }
-  });
+  try {
+    await client.messages.create(mailgunDomain, emailData);
+  } catch (err) {
+    console.error(err);
+  }
 };
