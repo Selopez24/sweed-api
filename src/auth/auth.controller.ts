@@ -1,10 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   ResetPasswordDTO,
   ResetPasswordConfirmDTO,
 } from '../interfaces/authInterfaces';
 import { Public } from 'src/decorators/public';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -12,8 +13,20 @@ export class AuthController {
 
   @Public()
   @Post('reset-password')
-  async requestResetPassword(@Body() resetPasswordDTO: ResetPasswordDTO) {
-    return this.authService.requestResetPassword(resetPasswordDTO.email);
+  async requestResetPassword(
+    @Body() resetPasswordDTO: ResetPasswordDTO,
+    @Res() res: Response,
+  ) {
+    const result = await this.authService.requestResetPassword(
+      resetPasswordDTO.email,
+    );
+    return res.status(HttpStatus.OK).json({
+      statusCode: 200,
+      message: result.message,
+      data: {
+        token: result.token,
+      },
+    });
   }
 
   @Public()

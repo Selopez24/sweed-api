@@ -48,36 +48,31 @@ export class AuthService {
     }
 
     const token = this.jwtService.sign({ sub: user.id, email });
+    // TODO! pasar a un modulo
 
     await sendEmail(email, token);
 
-    return { user, token, email };
+    return {
+      message: 'Email sent successfully!',
+      userId: user.id,
+      email,
+      token,
+    };
   }
+
   async confirmResetPassword(
     token: string,
     newPassword: string,
-  ): Promise<string> {
+  ): Promise<{ message: string }> {
     let userId: any;
-
-    console.log({ token });
-
     try {
       const decodedToken = this.jwtService.verify(token);
       userId = decodedToken.sub;
     } catch (error) {
       throw new UnauthorizedException('Invalid token');
     }
-
-    const user = await this.usersService.findById(userId);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    console.log({ hashedPassword });
-
-    await this.usersService.updateUserPassword(user.id, hashedPassword);
-
-    return 'Password reset successfully';
+    await this.usersService.updateUserPassword(userId, hashedPassword);
+    return { message: 'Password reset successfully' };
   }
 }

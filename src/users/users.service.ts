@@ -44,7 +44,6 @@ export class UsersService {
     const columns = getColumnsFromRepo(this.usersRepository, [
       withPassword ? '' : 'password',
     ]);
-
     return this.usersRepository.findOne({
       select: columns,
       where: { username },
@@ -62,19 +61,10 @@ export class UsersService {
 
   findById(id: string): Promise<User> {
     const user = this.usersRepository.findOneBy({ id });
-
     return user;
   }
 
   async updateUserPassword(id: string, newPassword: string): Promise<void> {
-    const user = await this.usersRepository.findOneBy({ id });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    user.password = newPassword;
-
-    await this.usersRepository.save(user);
+    await this.usersRepository.update(id, { password: newPassword });
   }
 }
