@@ -8,14 +8,16 @@ import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { sendEmail } from 'src/email/email';
 import { User } from 'src/users/user.entity';
+import { SALT_ROUNDS_BCRYPT } from 'src/constants/auth.constants';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private emailService: EmailService,
   ) {}
 
   async validateUser(username: string, password: string): Promise<any> {
@@ -43,22 +45,27 @@ export class AuthService {
 
   async requestResetPassword(email: string) {
     const user = await this.usersService.findByEmail(email);
+    console.log({ user });
+
     if (!user) {
       throw new NotFoundException('Email not found');
     }
 
     const token = this.jwtService.sign({ sub: user.id, email });
+    await this.emailService.sendEmail(email, token);
 
-    await sendEmail(email, token);
-
-    return { user, token, email };
+    return {
+      userId: user.id,
+      email,
+      token,
+    };
   }
+
   async confirmResetPassword(
     token: string,
     newPassword: string,
-  ): Promise<string> {
+  ): Promise<{ message: string }> {
     let userId: any;
-
     console.log({ token });
 
     try {
@@ -67,17 +74,8 @@ export class AuthService {
     } catch (error) {
       throw new UnauthorizedException('Invalid token');
     }
-
-    const user = await this.usersService.findById(userId);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    console.log({ hashedPassword });
-
-    await this.usersService.updateUserPassword(user.id, hashedPassword);
-
-    return 'Password reset successfully';
+    const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS_BCRYPT);
+    await this.usersService.updateUserPassword(userId, hashedPassword);
+    return;
   }
 }

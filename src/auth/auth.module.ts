@@ -7,9 +7,10 @@ import { JWT_CONSTANTS } from './constants';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
 import { AuthController } from './auth.controller';
+import { EmailService } from 'src/email/email.service';
 
 @Module({
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, EmailService],
   imports: [
     UsersModule,
     PassportModule,

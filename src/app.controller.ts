@@ -1,11 +1,4 @@
-import {
-  Controller,
-  UseGuards,
-  Request,
-  Post,
-  Get,
-  Body,
-} from '@nestjs/common';
+import { Controller, UseGuards, Request, Post, Get } from '@nestjs/common';
 import { AuthService } from './auth/auth.service';
 import UserLoginDTO from './auth/dto/userLogin.dto';
 import { JwtAuthGuard } from './auth/jwt.guard';
@@ -20,6 +13,8 @@ export class AppController {
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   async login(@Request() req: any): Promise<UserLoginDTO> {
+    console.log({ req });
+
     const { updateDate, ...restUser } = await this.authService.login(req.user);
     return restUser;
   }
