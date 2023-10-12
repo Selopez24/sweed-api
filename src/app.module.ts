@@ -8,7 +8,10 @@ import { JwtAuthGuard } from './auth/jwt.guard';
 import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
 import { ImagesModule } from './images/images.module';
+<<<<<<< HEAD
 import { EmailModule } from './email/email.module';
+=======
+>>>>>>> fe230b3 (add basic image flow)
 import { SupabaseModule } from './supabase/supabase.module';
 
 @Module({
@@ -27,7 +30,10 @@ import { SupabaseModule } from './supabase/supabase.module';
     UsersModule,
     PostsModule,
     ImagesModule,
+<<<<<<< HEAD
     EmailModule,
+=======
+>>>>>>> fe230b3 (add basic image flow)
     SupabaseModule,
   ],
   controllers: [AppController],

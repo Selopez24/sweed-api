@@ -8,7 +8,6 @@ export class ImagesService {
 
   async createSignedUrl(path: string): Promise<any> {
     const client = await this.supabaseService.getClient();
-    console.log(path);
 
     const { data, error } = await client.storage
       .from(POST_IMGAGES)
