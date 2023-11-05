@@ -1,4 +1,8 @@
-import { Image } from 'src/images/image.entity';
+export interface Post_Image {
+  url: string;
+  name: string;
+  id: string;
+}
 
 export interface getPostDto {
   id: string;
@@ -6,7 +10,7 @@ export interface getPostDto {
   createDate: Date;
   updateDate: Date;
   userId: string;
-  images: Image[];
+  images: Post_Image[];
   user: {
     id: string;
     username: string;

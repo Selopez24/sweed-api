@@ -1,15 +1,22 @@
 import { Injectable } from '@nestjs/common';
+import { POST_IMGAGES } from 'src/consts/bucket';
 import { SupabaseService } from 'src/supabase/supabase.service';
-import { Express } from 'express';
 
 @Injectable()
 export class ImagesService {
   constructor(private readonly supabaseService: SupabaseService) {}
 
-  async getImage(imageName: string, Bucket: string) {
+  async createSignedUrl(path: string): Promise<any> {
     const client = await this.supabaseService.getClient();
+    console.log(path);
 
-    console.log(client);
+    const { data, error } = await client.storage
+      .from(POST_IMGAGES)
+      .createSignedUploadUrl(path);
+
+    console.log(data, error);
+
+    return data;
   }
 
   async saveImage(
@@ -23,9 +30,16 @@ export class ImagesService {
       .from('Images')
       .upload(`${folder}/${fileName}`, file.buffer, { upsert: true });
 
-    console.log(data);
-    console.log(error);
+    return { data, error };
+  }
 
-    return 'success';
+  async deleteImages(paths: string[]): Promise<void> {
+    const client = await this.supabaseService.getClient();
+
+    const { error } = await client.storage.from(POST_IMGAGES).remove(paths);
+
+    if (error) {
+      throw error;
+    }
   }
 }

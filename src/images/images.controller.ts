@@ -1,6 +1,6 @@
 import {
+  Body,
   Controller,
-  Get,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -8,23 +8,20 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImagesService } from './images.service';
 import { Express } from 'express';
+import { CreateSignedUrlDTO } from './dto/CreateSignedUrlDTO';
 
 @Controller('images')
 export class ImagesController {
   constructor(private readonly imagesService: ImagesService) {}
 
-  @Get()
-  getImage() {
-    this.imagesService.getImage('ast', 'ast');
-
-    return 'test';
-  }
-
   @Post()
   @UseInterceptors(FileInterceptor('file'))
-  postImage(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
-
-    this.imagesService.saveImage('avatar', file.originalname, file);
+  async postImage(@UploadedFile() file: Express.Multer.File) {
+    await this.imagesService.saveImage('avatar', file.originalname, file);
+    return 'Image saved successfully';
+  }
+  @Post('upload-url')
+  async crerteSignedUrl(@Body() createSignedUrlDTO: CreateSignedUrlDTO) {
+    return await this.imagesService.createSignedUrl(createSignedUrlDTO.path);
   }
 }
