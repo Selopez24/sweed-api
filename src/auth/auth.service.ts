@@ -45,20 +45,13 @@ export class AuthService {
 
   async requestResetPassword(email: string) {
     const user = await this.usersService.findByEmail(email);
-    console.log({ user });
-
     if (!user) {
       throw new NotFoundException('Email not found');
     }
-
     const token = this.jwtService.sign({ sub: user.id, email });
     await this.emailService.sendEmail(email, token);
 
-    return {
-      userId: user.id,
-      email,
-      token,
-    };
+    return token;
   }
 
   async confirmResetPassword(
@@ -66,8 +59,6 @@ export class AuthService {
     newPassword: string,
   ): Promise<{ message: string }> {
     let userId: any;
-    console.log({ token });
-
     try {
       const decodedToken = this.jwtService.verify(token);
       userId = decodedToken.sub;

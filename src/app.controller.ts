@@ -13,8 +13,6 @@ export class AppController {
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   async login(@Request() req: any): Promise<UserLoginDTO> {
-    console.log({ req });
-
     const { updateDate, ...restUser } = await this.authService.login(req.user);
     return restUser;
   }

@@ -11,14 +11,14 @@ export class AuthController {
   @Public()
   @Post('reset-password')
   async requestResetPassword(@Body() resetPasswordDTO: ResetPasswordDTO) {
-    const result = await this.authService.requestResetPassword(
+    const token = await this.authService.requestResetPassword(
       resetPasswordDTO.email,
     );
     return {
       statusCode: HttpStatus.OK,
       message: 'Email sent successfully!',
       data: {
-        token: result.token,
+        token,
       },
     };
   }
