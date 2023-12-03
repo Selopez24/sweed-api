@@ -2,6 +2,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
@@ -57,7 +58,7 @@ export class AuthService {
   async confirmResetPassword(
     token: string,
     newPassword: string,
-  ): Promise<{ message: string }> {
+  ): Promise<void> {
     let userId: any;
     try {
       const decodedToken = this.jwtService.verify(token);
@@ -65,8 +66,14 @@ export class AuthService {
     } catch (error) {
       throw new UnauthorizedException('Invalid token');
     }
-    const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS_BCRYPT);
-    await this.usersService.updateUserPassword(userId, hashedPassword);
+    try {
+      const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS_BCRYPT);
+      await this.usersService.updateUserPassword(userId, hashedPassword);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'An error occurred during the password reset process',
+      );
+    }
     return;
   }
 }
