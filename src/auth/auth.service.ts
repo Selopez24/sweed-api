@@ -63,16 +63,10 @@ export class AuthService {
     try {
       const decodedToken = this.jwtService.verify(token);
       userId = decodedToken.sub;
-    } catch (error) {
-      throw new UnauthorizedException('Invalid token');
-    }
-    try {
       const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS_BCRYPT);
       await this.usersService.updateUserPassword(userId, hashedPassword);
     } catch (error) {
-      throw new InternalServerErrorException(
-        'An error occurred during the password reset process',
-      );
+      throw new Error(error);
     }
     return;
   }
