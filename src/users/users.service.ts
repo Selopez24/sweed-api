@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import createUserDTO from './dto/createUser.dto';
@@ -36,14 +40,10 @@ export class UsersService {
     return this.usersRepository.findOneBy({ id });
   }
 
-  findByUsername(
-    username: string,
-    withPassword: boolean = false,
-  ): Promise<User> {
+  findByUsername(username: string, withPassword = false): Promise<User> {
     const columns = getColumnsFromRepo(this.usersRepository, [
       withPassword ? '' : 'password',
     ]);
-
     return this.usersRepository.findOne({
       select: columns,
       where: { username },
@@ -57,5 +57,14 @@ export class UsersService {
 
   async remove(id: string): Promise<void> {
     await this.usersRepository.delete(id);
+  }
+
+  findById(id: string): Promise<User> {
+    const user = this.usersRepository.findOneBy({ id });
+    return user;
+  }
+
+  async updateUserPassword(id: string, newPassword: string): Promise<void> {
+    await this.usersRepository.update(id, { password: newPassword });
   }
 }

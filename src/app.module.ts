@@ -8,6 +8,7 @@ import { JwtAuthGuard } from './auth/jwt.guard';
 import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
 import { ImagesModule } from './images/images.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ImagesModule } from './images/images.module';
     UsersModule,
     PostsModule,
     ImagesModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: JwtAuthGuard }],

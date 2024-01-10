@@ -1,14 +1,24 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import { NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/users/user.entity';
+import { SALT_ROUNDS_BCRYPT } from 'src/constants/auth.constants';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private emailService: EmailService,
   ) {}
 
   async validateUser(username: string, password: string): Promise<any> {
@@ -32,5 +42,32 @@ export class AuthService {
     const payload = { username: user.username, sub: user.id };
 
     return { access_token: this.jwtService.sign(payload), ...user };
+  }
+
+  async requestResetPassword(email: string) {
+    const user = await this.usersService.findByEmail(email);
+    if (!user) {
+      throw new NotFoundException('Email not found');
+    }
+    const token = this.jwtService.sign({ sub: user.id, email });
+    await this.emailService.sendEmail(email, token);
+
+    return token;
+  }
+
+  async confirmResetPassword(
+    token: string,
+    newPassword: string,
+  ): Promise<void> {
+    let userId: any;
+    try {
+      const decodedToken = this.jwtService.verify(token);
+      userId = decodedToken.sub;
+      const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS_BCRYPT);
+      await this.usersService.updateUserPassword(userId, hashedPassword);
+    } catch (error) {
+      throw new Error(error);
+    }
+    return;
   }
 }
