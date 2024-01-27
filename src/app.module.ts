@@ -13,6 +13,7 @@ import { EmailModule } from './email/email.module';
 =======
 >>>>>>> fe230b3 (add basic image flow)
 import { SupabaseModule } from './supabase/supabase.module';
+import { FollowersModule } from './followers/followers.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { SupabaseModule } from './supabase/supabase.module';
 =======
 >>>>>>> fe230b3 (add basic image flow)
     SupabaseModule,
+    FollowersModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: JwtAuthGuard }],

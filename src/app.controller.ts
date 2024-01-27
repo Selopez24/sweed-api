@@ -22,4 +22,9 @@ export class AppController {
   getProfile(@Request() req: any) {
     return req.user;
   }
+
+  @Get('health')
+  health() {
+    return 'ok';
+  }
 }
