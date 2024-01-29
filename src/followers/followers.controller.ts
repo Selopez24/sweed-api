@@ -1,5 +1,14 @@
-import { Body, Controller, Get, Param, Post, Request } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Request,
+} from '@nestjs/common';
 import { FollowUserDTO } from './dto/FollowUser.dto';
+import { UnfollowUserDTO } from './dto/UnfollowUser.dto';
 import { FollowersService } from './followers.service';
 
 @Controller('followers')
@@ -29,13 +38,25 @@ export class FollowersController {
   @Post()
   async followUser(@Body() followUserDTO: FollowUserDTO, @Request() req: any) {
     try {
-      const result = await this.followersService.followUser(
+      return await this.followersService.followUser(
         req.user.id,
         followUserDTO.userToFollowId,
       );
-      return result;
     } catch (error) {
       throw new Error(error);
+    }
+  }
+
+  @Delete('unfollow')
+  unfollowUser(@Body() unfollowUserDTO: UnfollowUserDTO, @Request() req: any) {
+    try {
+      this.followersService.unfollowUser(
+        unfollowUserDTO.userToUnfollowId,
+        req.user.id,
+      );
+      return 'Successfully unfollowed';
+    } catch (error) {
+      return error;
     }
   }
 }

@@ -37,4 +37,11 @@ export class FollowersService {
   getUserFollowersCount(userId: string) {
     return this.followersRepository.count({ where: { followeeId: userId } });
   }
+
+  unfollowUser(userToUnfollowId: string, currentUserId: string) {
+    return this.followersRepository.delete({
+      followeeId: userToUnfollowId,
+      followerId: currentUserId,
+    });
+  }
 }
