@@ -38,6 +38,26 @@ export class FollowersService {
     return this.followersRepository.count({ where: { followeeId: userId } });
   }
 
+  async getUserFollowees(userId: string) {
+    const followees = await this.followersRepository
+      .createQueryBuilder('follower')
+      .leftJoinAndSelect(User, 'user', 'user.id = follower.followeeId')
+      .where('follower.followerId = :userId', { userId })
+      .getRawMany();
+
+    return followees.map((entity) => ({
+      id: entity.user_id,
+      userName: entity.user_username,
+      firstName: entity.user_firstName,
+      lastName: entity.user_lastName,
+      isActive: entity.user_isActive,
+    }));
+  }
+
+  getUserFolloweesCount(userId: string) {
+    return this.followersRepository.count({ where: { followerId: userId } });
+  }
+
   unfollowUser(userToUnfollowId: string, currentUserId: string) {
     return this.followersRepository.delete({
       followeeId: userToUnfollowId,
