@@ -15,7 +15,12 @@ import { SupabaseModule } from './supabase/supabase.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'db.mdttalbjettowwtmzfrx.supabase.co',
+      host: 'aws-0-us-east-1.pooler.supabase.com',
+      port: 5432,
+      username: 'postgres.mdttalbjettowwtmzfrx',
+      password: 'QD4TfiLlQO378MSb',
+      database: 'postgres',
+      synchronize: true,
       autoLoadEntities: true,
     }),
     AuthModule,
