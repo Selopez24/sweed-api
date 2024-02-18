@@ -9,14 +9,15 @@ import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
 import { ImagesModule } from './images/images.module';
 import { EmailModule } from './email/email.module';
+import { SupabaseModule } from './supabase/supabase.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'db.mdttalbjettowwtmzfrx.supabase.co',
+      host: 'aws-0-us-east-1.pooler.supabase.com',
       port: 5432,
-      username: 'postgres',
+      username: 'postgres.mdttalbjettowwtmzfrx',
       password: 'QD4TfiLlQO378MSb',
       database: 'postgres',
       synchronize: true,
@@ -27,6 +28,7 @@ import { EmailModule } from './email/email.module';
     PostsModule,
     ImagesModule,
     EmailModule,
+    SupabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: JwtAuthGuard }],

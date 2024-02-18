@@ -1,4 +1,3 @@
-import { Image } from 'src/images/image.entity';
 import { User } from 'src/users/user.entity';
 import {
   Column,
@@ -9,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Post_Image } from './post_image.entity';
 
 @Entity()
 export class Post {
@@ -30,6 +30,6 @@ export class Post {
   @Column()
   userId: string;
 
-  @OneToMany(() => Image, (image) => image.post, { cascade: true })
-  images: Image[];
+  @OneToMany(() => Post_Image, (image) => image.post, { cascade: true })
+  images: Post_Image[];
 }
