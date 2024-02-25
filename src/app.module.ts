@@ -11,18 +11,24 @@ import { ImagesModule } from './images/images.module';
 import { EmailModule } from './email/email.module';
 import { SupabaseModule } from './supabase/supabase.module';
 import { FollowersModule } from './followers/followers.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'aws-0-us-east-1.pooler.supabase.com',
-      port: 5432,
-      username: 'postgres.mdttalbjettowwtmzfrx',
-      password: 'QD4TfiLlQO378MSb',
-      database: 'postgres',
-      synchronize: true,
-      autoLoadEntities: true,
+    ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get('DB_HOST'),
+        port: +configService.get('DB_PORT'),
+        username: configService.get('DB_USER'),
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DB_NAME'),
+        synchronize: true,
+        autoLoadEntities: true,
+      }),
+      inject: [ConfigService],
     }),
     AuthModule,
     UsersModule,
