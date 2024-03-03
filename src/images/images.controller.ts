@@ -22,6 +22,9 @@ export class ImagesController {
   }
   @Post('upload-url')
   async crerteSignedUrl(@Body() createSignedUrlDTO: CreateSignedUrlDTO) {
-    return await this.imagesService.createSignedUrl(createSignedUrlDTO.path);
+    return await this.imagesService.createSignedUrl(
+      createSignedUrlDTO.bucket,
+      createSignedUrlDTO.path,
+    );
   }
 }

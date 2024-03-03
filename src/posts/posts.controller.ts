@@ -1,12 +1,18 @@
 import { Get, Body, Controller, Request, Param } from '@nestjs/common';
 import { Post } from '@nestjs/common';
+import { POST_IMGAGES } from 'src/consts/bucket';
+import { CreateSignedUrlDTO } from './dto/createSignedUrl.dto';
+import { ImagesService } from 'src/images/images.service';
 import createPostDTO from './dto/createPost.dto';
 import { getPostDto } from './dto/getPost.dto';
 import { PostsService } from './posts.service';
 
 @Controller('posts')
 export class PostsController {
-  constructor(private postsService: PostsService) {}
+  constructor(
+    private postsService: PostsService,
+    private imagesService: ImagesService,
+  ) {}
 
   @Get('user/:id')
   async getByUser(@Param() params: any): Promise<getPostDto[]> {
@@ -27,5 +33,13 @@ export class PostsController {
   @Post()
   create(@Body() createPostDTO: createPostDTO, @Request() req: any) {
     return this.postsService.create(createPostDTO, req.user.id);
+  }
+
+  @Post('upload-url')
+  async crerteSignedUrl(@Body() createSignedUrlDTO: CreateSignedUrlDTO) {
+    return await this.imagesService.createSignedUrl(
+      POST_IMGAGES,
+      createSignedUrlDTO.path,
+    );
   }
 }
