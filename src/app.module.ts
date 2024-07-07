@@ -10,6 +10,7 @@ import { PostsModule } from './posts/posts.module';
 import { ImagesModule } from './images/images.module';
 import { EmailModule } from './email/email.module';
 import { SupabaseModule } from './supabase/supabase.module';
+import { FollowersModule } from './followers/followers.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { SupabaseModule } from './supabase/supabase.module';
     ImagesModule,
     EmailModule,
     SupabaseModule,
+    FollowersModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: JwtAuthGuard }],
