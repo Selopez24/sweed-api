@@ -7,5 +7,6 @@ import { ImagesController } from './images.controller';
   imports: [SupabaseModule],
   providers: [ImagesService],
   controllers: [ImagesController],
+  exports: [ImagesService],
 })
 export class ImagesModule {}
