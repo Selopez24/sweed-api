@@ -6,11 +6,11 @@ import { SupabaseService } from 'src/supabase/supabase.service';
 export class ImagesService {
   constructor(private readonly supabaseService: SupabaseService) {}
 
-  async createSignedUrl(path: string): Promise<any> {
+  async createSignedUrl(folder: string, path: string): Promise<any> {
     const client = await this.supabaseService.getClient();
 
     const { data, error } = await client.storage
-      .from(POST_IMGAGES)
+      .from(folder)
       .createSignedUploadUrl(path);
 
     console.log(data, error);
