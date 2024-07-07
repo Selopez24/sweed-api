@@ -1,4 +1,3 @@
 export interface CreateSignedUrlDTO {
   path: string;
-  bucket: string;
 }
