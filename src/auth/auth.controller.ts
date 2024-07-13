@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpStatus,
-  Post,
-  UseGuards,
-  Request,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from 'src/decorators/public';
 import ResetPasswordDTO from './dto/resetPassword.dto';
@@ -27,7 +19,7 @@ export class AuthController {
 
   @Public()
   @UseGuards(LocalAuthGuard)
-  @Post('auth/login')
+  @Post('login')
   async login(@Request() req: any): Promise<UserLoginDTO> {
     const { updateDate, ...restUser } = await this.authService.login(req.user);
     return restUser;
@@ -36,9 +28,7 @@ export class AuthController {
   @Public()
   @Post('reset-password')
   async requestResetPassword(@Body() resetPasswordDTO: ResetPasswordDTO) {
-    const token = await this.authService.requestResetPassword(
-      resetPasswordDTO.email,
-    );
+    const token = await this.authService.requestResetPassword(resetPasswordDTO.email);
     return {
       statusCode: HttpStatus.OK,
       message: 'Email sent successfully!',
@@ -50,9 +40,7 @@ export class AuthController {
 
   @Public()
   @Post('reset-confirm')
-  async confirmResetPassword(
-    @Body() resetPasswordConfirmDTO: ResetPasswordConfirmDTO,
-  ) {
+  async confirmResetPassword(@Body() resetPasswordConfirmDTO: ResetPasswordConfirmDTO) {
     await this.authService.confirmResetPassword(
       resetPasswordConfirmDTO.token,
       resetPasswordConfirmDTO.newPassword,

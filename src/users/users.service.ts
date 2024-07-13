@@ -1,20 +1,15 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import createUserDTO from './dto/createUser.dto';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
 import { getColumnsFromRepo } from 'src/utils/getColumnsFromRepo';
+import { updateUserProfileDTO } from './dto/userProfile.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(User) private usersRepository: Repository<User>,
-  ) {}
+  constructor(@InjectRepository(User) private usersRepository: Repository<User>) {}
 
   async create(createUserDTO: createUserDTO): Promise<User> {
     const user = await this.findByEmail(createUserDTO.email);
@@ -41,9 +36,7 @@ export class UsersService {
   }
 
   findByUsername(username: string, withPassword = false): Promise<User> {
-    const columns = getColumnsFromRepo(this.usersRepository, [
-      withPassword ? '' : 'password',
-    ]);
+    const columns = getColumnsFromRepo(this.usersRepository, [withPassword ? '' : 'password']);
     return this.usersRepository.findOne({
       select: columns,
       where: { username },
@@ -66,5 +59,9 @@ export class UsersService {
 
   async updateUserPassword(id: string, newPassword: string): Promise<void> {
     await this.usersRepository.update(id, { password: newPassword });
+  }
+
+  async updateUserProfile(id: string, userProfile: updateUserProfileDTO) {
+    return await this.usersRepository.update(id, { userProfile });
   }
 }

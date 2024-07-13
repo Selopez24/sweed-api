@@ -3,10 +3,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserProfile } from './userProfile.entity';
 
 @Entity()
 export class User {
@@ -36,6 +39,10 @@ export class User {
 
   @UpdateDateColumn()
   updateDate: Date;
+
+  @OneToOne(() => UserProfile, { eager: true, cascade: ['update', 'insert'] })
+  @JoinColumn()
+  userProfile: UserProfile;
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];

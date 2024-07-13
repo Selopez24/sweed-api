@@ -2,10 +2,16 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
+export enum GrowType {
+  INDOOR = 'indoor',
+  OUTDOOR = 'outdoor',
+}
+
+const nullable = true;
 
 @Entity()
 export class UserProfile {
@@ -14,15 +20,22 @@ export class UserProfile {
 
   @Column({
     length: 120,
+    nullable,
   })
   bio: string;
 
-  @Column()
+  @Column({ nullable })
   yearsGrowing: number;
 
-  @CreateDateColumn()
+  @Column({ nullable })
+  location: string;
+
+  @Column({ nullable, type: 'enum', enum: GrowType, default: null })
+  growType: GrowType;
+
+  @CreateDateColumn({ nullable })
   createDate: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ nullable })
   updateDate: Date;
 }
